@@ -1,107 +1,72 @@
 const fs = require('fs');
-const path = require('path')
+const chalk = require('chalk');
+const ms = require('ms');
+const manager = require('./functions.js');
+const { sourcefile, sourcefolder, datafoldername, destination, intervaltime } = require('./config.json');
 
 
-// Functions
-var mkdir = function(dir) {
-	// making directory without exception if exists
-	try {
-		fs.mkdirSync(dir, 0755);
-	} catch (error) {
-		if (error.code != "EEXIST") {
-			throw error;
-		}
-	}
-};
-
-var copy = function(src, dest) {
-	var oldFile = fs.createReadStream(src);
-	var newFile = fs.createWriteStream(dest);
-	oldFile.pipe(newFile);
-};
-
-var copyDir = function(src, dest) {
-  mkdir(dest);
-  var files = fs.readdirSync(src);
-  for(var i = 0; i < files.length; i++) {
-    var current = fs.lstatSync(path.join(src, files[i]));
-    if(current.isDirectory()) {
-      copyDir(path.join(src, files[i]), path.join(dest, files[i]));
-    } else if(current.isSymbolicLink()) {
-      var symlink = fs.readlinkSync(path.join(src, files[i]));
-      fs.symlinkSync(symlink, path.join(dest, files[i]));
-    } else {
-      copy(path.join(src, files[i]), path.join(dest, files[i]));
-    }
-  }
-};
-
-function dateTimePad(value, digits){
-  let number = value
-  while (number.toString().length < digits) {
-    number = "0" + number
-  }
-  return number;
+// Making sure the necessary properties have been provided
+if (!sourcefile && !sourcefolder) return console.log(chalk.bold.red('Neither a source file or a source folder have been provided!'));
+if (sourcefile && (!/^[a-zA-Z]/.test(sourcefile) || !sourcefile.includes(':'))) return console.log(chalk.bold.red('The source file path is not a valid path!'));
+if (sourcefolder && (!/^[a-zA-Z]/.test(sourcefolder) || !sourcefolder.includes(':'))) return console.log(chalk.bold.red('The source folder path is not a valid path!'));
+if (!datafoldername) return console.log(chalk.bold.red('No name for the data folders has been provided!'));
+if (!destination) {
+  return console.log(chalk.bold.red('No destination has been provided!'));
+} else if (!/^[a-zA-Z]/.test(destination) || !destination.includes(':')) {
+  return console.log(chalk.bold.red('The destination path is not a valid path!'));
+}
+if (!intervaltime) {
+  return console.log(chalk.bold.red('No interval time has been provided!'));
+} else if (!ms(intervaltime) || /^\d+$/.test(intervaltime)) {
+  return console.log(chalk.bold.red(`The interval time is not a valid number!\nYou can use ${chalk.yellow('d')} for days, ${chalk.yellow('h')} for hours, ${chalk.yellow('m')} for minutes, ${chalk.yellow('s')} for seconds and ${chalk.yellow('ms')} for milliseconds!`));
 }
 
 
-// Create the folder if it does not exist
-if (!fs.existsSync(`C:/AUTO BOT DATA`)) {
-  fs.mkdir('C:/AUTO BOT DATA', (error) => {
-    if (error) throw error;
-  });
-}
+// Main process
+
+// Make a directory for the data if it does not exist
+manager.mkdir(destination);
+
+let n = 1; // This number gets used for making numbered data folders
+while (fs.existsSync(`${destination}/${datafoldername}_${n}`)) n++ // As long as a Data folder with with the number exists, increase the number by 1
+
+manager.mkdir(`${destination}/${datafoldername}_${n}`); // Make a numbered data folder
+
+// Copy the source file, if one was provided
+if (sourcefile) manager.copy(sourcefile, `${destination}/${datafoldername}_${n}/${sourcefile.split('/').pop()}`);
+// Copy the source folder, if one was provided
+if (sourcefolder) manager.copyDir(sourcefolder, `${destination}/${datafoldername}_${n}/${sourcefolder.split('/').pop()}`);
+
+// Logging
+const date = new Date(Date.now());
+console.log(chalk.bold.green(`The ${sourcefile ? `${chalk.yellow.underline(sourcefile.split('/').pop())} file` : ''} ${sourcefolder ? `${sourcefile ? 'and the ' : ''}${chalk.yellow.underline(sourcefolder.split('/').pop())} folder ${sourcefile ? 'were' : 'was'}` : 'was'} successfully copied to the ${chalk.yellow.underline(destination.split('/').pop())} directory! | #${n} | ${
+  date.getFullYear() + "-" + 
+  manager.dateTimePad((date.getMonth() + 1), 2) + "-" + 
+  manager.dateTimePad(date.getDate(), 2) + " " +
+  manager.dateTimePad(date.getHours(), 2) + ":" +
+  manager.dateTimePad(date.getMinutes(), 2) + ":" +
+  manager.dateTimePad(date.getSeconds(), 2)
+}`));
 
 
-let n = 1;
-// Do it once before the interval
-while (fs.existsSync(`C:/AUTO BOT DATA/Data_${n}`)) {
-  n++
-}
+setInterval(async () => { // Set an interval for copying the file and/or the folder after a specific amount of time
+  while (fs.existsSync(`${destination}/${datafoldername}_${n}`)) n++ // As long as a Data folder with with the number exists, increase the number by 1
 
-fs.mkdir(`C:/AUTO BOT DATA/Data_${n}`, (error) => {
-  if (error) throw error;
-});
-
-// destination will be created or overwritten by default.
-fs.copyFile('C:/PASSIONE/json.sqlite', `C:/AUTO BOT DATA/Data_${n}/json.sqlite`, (error) => {
-  if (error) throw error;
-
-  copyDir('C:/PASSIONE/data', `C:/AUTO BOT DATA/Data_${n}/data`)
-
-  const date = new Date(Date.now())
-
-  console.log(`Data was successfully copied to the "AUTO BOT DATA" folder! | #${n} | ${date.getFullYear() + "-" + 
-    dateTimePad((date.getMonth() + 1), 2) + "-" + 
-    dateTimePad(date.getDate(), 2) + " " +
-    dateTimePad(date.getHours(), 2) + ":" +
-    dateTimePad(date.getMinutes(), 2) + ":" +
-    dateTimePad(date.getSeconds(), 2)}`)
-})
-
-
-setInterval(async () => {
-  while (fs.existsSync(`C:/AUTO BOT DATA/Data_${n}`)) {
-    n++
-  }
-
-  fs.mkdir(`C:/AUTO BOT DATA/Data_${n}`, (error) => {
-    if (error) throw error;
-  });
-
-  // destination will be created or overwritten by default.
-  fs.copyFile('C:/PASSIONE/json.sqlite', `C:/AUTO BOT DATA/Data_${n}/json.sqlite`, (error) => {
-    if (error) throw error;
-
-    copyDir('C:/PASSIONE/data', `C:/AUTO BOT DATA/Data_${n}/data`)
-
-    const date = new Date(Date.now())
-
-    console.log(`Data was successfully copied to the "AUTO BOT DATA" folder! | #${n} | ${dateTimePad(date.getDate(), 2) + "." +
-      dateTimePad((date.getMonth() + 1), 2) + "." + 
-      date.getFullYear() + " " + 
-      dateTimePad(date.getHours(), 2) + ":" +
-      dateTimePad(date.getMinutes(), 2) + ":" +
-      dateTimePad(date.getSeconds(), 2)}`)
-  })
-}, 1000*60*60 * 1)
+  manager.mkdir(`${destination}/${datafoldername}_${n}`); // Make a numbered data folder
+  
+  // Copy the source file, if one was provided
+  if (sourcefile) manager.copy(sourcefile, `${destination}/${datafoldername}_${n}/${sourcefile.split('/').pop()}`);
+  // Copy the source folder, if one was provided
+  if (sourcefolder) manager.copyDir(sourcefolder, `${destination}/${datafoldername}_${n}/${sourcefolder.split('/').pop()}`);
+    
+  // Logging
+  const date = new Date(Date.now());
+  console.log(chalk.bold.green(`The ${sourcefile ? `${chalk.yellow.underline(sourcefile.split('/').pop())} file` : ''} ${sourcefolder ? `${sourcefile ? 'and the ' : ''}${chalk.yellow.underline(sourcefolder.split('/').pop())} folder ${sourcefile ? 'were' : 'was'}` : 'was'} successfully copied to the ${chalk.yellow.underline(destination.split('/').pop())} directory! | #${n} | ${
+    date.getFullYear() + "-" + 
+    manager.dateTimePad((date.getMonth() + 1), 2) + "-" + 
+    manager.dateTimePad(date.getDate(), 2) + " " +
+    manager.dateTimePad(date.getHours(), 2) + ":" +
+    manager.dateTimePad(date.getMinutes(), 2) + ":" +
+    manager.dateTimePad(date.getSeconds(), 2)
+  }`));
+}, ms(intervaltime)); // Interval time

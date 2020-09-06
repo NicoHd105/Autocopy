@@ -1,5 +1,5 @@
 # Autocopy
 
-## How to change the source or/and destination folder?
-```Open the index.js file and edit the paths```
+## How to use this program?
+```Fill out the properties in the config.json file but you do not necessarily have to provide a file and a folder, it is ok of you provide just one of them ```
 

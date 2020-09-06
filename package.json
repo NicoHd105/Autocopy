@@ -4,7 +4,9 @@
   "description": "Automatically copy data from one folder to another",
   "main": "index.js",
   "dependencies": {
-    "path": "^0.12.7"
+    "chalk": "^4.1.0",
+    "ms": "^2.1.2",
+    "ncp": "^2.0.0"
   },
   "devDependencies": {},
   "scripts": {
