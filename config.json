@@ -1,7 +1,8 @@
 {
-    "sourcefile": "C:/Privat/test.txt",  
-    "sourcefolder": "C:/Privat/test",
+    "sourcefile": "C:/Folder1/test.txt",  
+    "sourcefolder": "C:/Folder2/test",
     "datafoldername": "Data",
-    "destination": "C:/Privat/XXXXXXXXXXXXXXXXXXXXXXXXX",
-    "intervaltime": "sdfsdf"
+    "datafolderspliter": "_",
+    "destination": "C:/DataFolder",
+    "intervaltime": "1h"
 }

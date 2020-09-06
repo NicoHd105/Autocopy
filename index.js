@@ -2,7 +2,7 @@ const fs = require('fs');
 const chalk = require('chalk');
 const ms = require('ms');
 const manager = require('./functions.js');
-const { sourcefile, sourcefolder, datafoldername, destination, intervaltime } = require('./config.json');
+const { sourcefile, sourcefolder, datafoldername, datafolderspliter, destination, intervaltime } = require('./config.json');
 
 
 // Making sure the necessary properties have been provided
@@ -28,14 +28,14 @@ if (!intervaltime) {
 manager.mkdir(destination);
 
 let n = 1; // This number gets used for making numbered data folders
-while (fs.existsSync(`${destination}/${datafoldername}_${n}`)) n++ // As long as a Data folder with with the number exists, increase the number by 1
+while (fs.existsSync(`${destination}/${datafoldername}${datafolderspliter}${n}`)) n++ // As long as a Data folder with with the number exists, increase the number by 1
 
-manager.mkdir(`${destination}/${datafoldername}_${n}`); // Make a numbered data folder
+manager.mkdir(`${destination}/${datafoldername}${datafolderspliter}${n}`); // Make a numbered data folder
 
 // Copy the source file, if one was provided
-if (sourcefile) manager.copy(sourcefile, `${destination}/${datafoldername}_${n}/${sourcefile.split('/').pop()}`);
+if (sourcefile) manager.copy(sourcefile, `${destination}/${datafoldername}${datafolderspliter}${n}/${sourcefile.split('/').pop()}`);
 // Copy the source folder, if one was provided
-if (sourcefolder) manager.copyDir(sourcefolder, `${destination}/${datafoldername}_${n}/${sourcefolder.split('/').pop()}`);
+if (sourcefolder) manager.copyDir(sourcefolder, `${destination}/${datafoldername}${datafolderspliter}${n}/${sourcefolder.split('/').pop()}`);
 
 // Logging
 const date = new Date(Date.now());
@@ -50,14 +50,14 @@ console.log(chalk.bold.green(`The ${sourcefile ? `${chalk.yellow.underline(sourc
 
 
 setInterval(async () => { // Set an interval for copying the file and/or the folder after a specific amount of time
-  while (fs.existsSync(`${destination}/${datafoldername}_${n}`)) n++ // As long as a Data folder with with the number exists, increase the number by 1
+  while (fs.existsSync(`${destination}/${datafoldername}${datafolderspliter}${n}`)) n++ // As long as a Data folder with with the number exists, increase the number by 1
 
-  manager.mkdir(`${destination}/${datafoldername}_${n}`); // Make a numbered data folder
+  manager.mkdir(`${destination}/${datafoldername}${datafolderspliter}${n}`); // Make a numbered data folder
   
   // Copy the source file, if one was provided
-  if (sourcefile) manager.copy(sourcefile, `${destination}/${datafoldername}_${n}/${sourcefile.split('/').pop()}`);
+  if (sourcefile) manager.copy(sourcefile, `${destination}/${datafoldername}${datafolderspliter}${n}/${sourcefile.split('/').pop()}`);
   // Copy the source folder, if one was provided
-  if (sourcefolder) manager.copyDir(sourcefolder, `${destination}/${datafoldername}_${n}/${sourcefolder.split('/').pop()}`);
+  if (sourcefolder) manager.copyDir(sourcefolder, `${destination}/${datafoldername}${datafolderspliter}${n}/${sourcefolder.split('/').pop()}`);
     
   // Logging
   const date = new Date(Date.now());
