@@ -12,11 +12,11 @@ You do not necessarily have to provide a file and a folder, it is ok of you prov
 ## Example config.json
 ```
 {
-    "sourcefile": "C:/Folder1/test.txt",  
-    "sourcefolder": "C:/Folder2/test",
+    "sourcefilepath": "C:/Folder1/test.txt",  
+    "sourcefolderpath": "C:/Folder2/test",
     "datafoldername": "Data",
     "datafolderspliter": "_",
-    "destination": "C:/DataFolder",
+    "destinationpath": "C:/DataFolder",
     "intervaltime": "1h"
 }
 ```
