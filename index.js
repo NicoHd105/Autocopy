@@ -6,19 +6,19 @@ const { sourcefilepath, sourcefolderpath, datafoldername, datafolderspliter, des
 
 4
 // Making sure the necessary properties have been provided and they are valid
-if (!sourcefilepath && !sourcefolderpath) return console.log(chalk.bold.red('Neither a source file or a source folder have been provided!'));
-if (sourcefilepath && !fs.existsSync(sourcefilepath)) return console.log(chalk.bold.red('The source file path is not a valid path!'));
-if (sourcefolderpath && !fs.existsSync(sourcefolderpath)) return console.log(chalk.bold.red('The source folder path is not a valid path!'));
-if (!datafoldername) return console.log(chalk.bold.red('No name for the data folders has been provided!'));
+if (!sourcefilepath && !sourcefolderpath) return console.log(chalk.red.bold('Neither a source file or a source folder have been provided!'));
+if (sourcefilepath && !fs.existsSync(sourcefilepath)) return console.log(chalk.red.bold('The source file path is not a valid path!'));
+if (sourcefolderpath && !fs.existsSync(sourcefolderpath)) return console.log(chalk.red.bold('The source folder path is not a valid path!'));
+if (!datafoldername) return console.log(chalk.red.bold('No name for the data folders has been provided!'));
 if (!destinationpath) {
-  return console.log(chalk.bold.red('No destinationpath has been provided!'));
+  return console.log(chalk.red.bold('No destinationpath has been provided!'));
 } else if (!fs.existsSync(destinationpath)) {
-  return console.log(chalk.bold.red('The destinationpath path is not a valid path!'));
+  return console.log(chalk.red.bold('The destinationpath path is not a valid path!'));
 }
 if (!intervaltime) {
-  return console.log(chalk.bold.red('No interval time has been provided!'));
+  return console.log(chalk.red.bold('No interval time has been provided!'));
 } else if (!ms(intervaltime) || /^\d+$/.test(intervaltime)) {
-  return console.log(chalk.bold.red(`The interval time is not a valid number!\nYou can use ${chalk.yellow('d')} for days, ${chalk.yellow('h')} for hours, ${chalk.yellow('m')} for minutes, ${chalk.yellow('s')} for seconds and ${chalk.yellow('ms')} for milliseconds!`));
+  return console.log(chalk.red.bold(`The interval time is not a valid number!\nYou can use ${chalk.yellow('d')} for days, ${chalk.yellow('h')} for hours, ${chalk.yellow('m')} for minutes, ${chalk.yellow('s')} for seconds and ${chalk.yellow('ms')} for milliseconds!`));
 }
 
 
@@ -39,7 +39,7 @@ if (sourcefolderpath) manager.copyDir(sourcefolderpath, `${destinationpath}/${da
 
 // Logging
 const date = new Date(Date.now());
-console.log(chalk.bold.green(`The ${sourcefilepath ? `${chalk.yellow.underline(sourcefilepath.split('/').pop())} file` : ''} ${sourcefolderpath ? `${sourcefilepath ? 'and the ' : ''}${chalk.yellow.underline(sourcefolderpath.split('/').pop())} folder ${sourcefilepath ? 'were' : 'was'}` : 'was'} successfully copied to the ${chalk.yellow.underline(destinationpath.split('/').pop())} directory! | #${n} | ${
+console.log(chalk.green.bold(`The ${sourcefilepath ? `${chalk.yellow.underline(sourcefilepath.split('/').pop())} file` : ''} ${sourcefolderpath ? `${sourcefilepath ? 'and the ' : ''}${chalk.yellow.underline(sourcefolderpath.split('/').pop())} folder ${sourcefilepath ? 'were' : 'was'}` : 'was'} successfully copied to the ${chalk.yellow.underline(destinationpath.split('/').pop())} directory! | #${n} | ${
   date.getFullYear() + "-" + 
   manager.dateTimePad((date.getMonth() + 1), 2) + "-" + 
   manager.dateTimePad(date.getDate(), 2) + " " +
@@ -61,7 +61,7 @@ setInterval(async () => { // Set an interval for copying the file and/or the fol
     
   // Logging
   const date = new Date(Date.now());
-  console.log(chalk.bold.green(`The ${sourcefilepath ? `${chalk.yellow.underline(sourcefilepath.split('/').pop())} file` : ''} ${sourcefolderpath ? `${sourcefilepath ? 'and the ' : ''}${chalk.yellow.underline(sourcefolderpath.split('/').pop())} folder ${sourcefilepath ? 'were' : 'was'}` : 'was'} successfully copied to the ${chalk.yellow.underline(destinationpath.split('/').pop())} directory! | #${n} | ${
+  console.log(chalk.green.bold(`The ${sourcefilepath ? `${chalk.yellow.underline(sourcefilepath.split('/').pop())} file` : ''} ${sourcefolderpath ? `${sourcefilepath ? 'and the ' : ''}${chalk.yellow.underline(sourcefolderpath.split('/').pop())} folder ${sourcefilepath ? 'were' : 'was'}` : 'was'} successfully copied to the ${chalk.yellow.underline(destinationpath.split('/').pop())} directory! | #${n} | ${
     date.getFullYear() + "-" + 
     manager.dateTimePad((date.getMonth() + 1), 2) + "-" + 
     manager.dateTimePad(date.getDate(), 2) + " " +
