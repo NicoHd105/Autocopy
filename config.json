@@ -3,6 +3,6 @@
     "SOURCE_FOLDER_PATH": "C:/Folder2/test",
     "DATA_FOLDER_NAME": "Data",
     "DATA_FOLDER_SEPERATOR": "_",
-    "DESTINATION_PATH": "C:/DataFolder/asdsadasdsad",
-    "INTERVALTIME": "10s"
+    "DESTINATION_PATH": "C:/DataFolder",
+    "INTERVALTIME": "1h"
 }
