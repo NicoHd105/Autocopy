@@ -2,44 +2,45 @@ const fs = require('fs');
 const chalk = require('chalk');
 const ms = require('ms');
 const manager = require('./functions.js');
-const { sourcefilepath, sourcefolderpath, datafoldername, datafolderspliter, destinationpath, intervaltime } = require('./config.json');
+const { SOURCE_FILE_PATH, SOURCE_FOLDER_PATH, DATA_FOLDER_NAME, DATA_FOLDER_SEPERATOR, DESTINATION_PATH, INTERVALTIME } = require('./config.json');
 
-4
+
 // Making sure the necessary properties have been provided and they are valid
-if (!sourcefilepath && !sourcefolderpath) return console.log(chalk.red.bold('Neither a source file or a source folder have been provided!'));
-if (sourcefilepath && !fs.existsSync(sourcefilepath)) return console.log(chalk.red.bold('The source file path is not a valid path!'));
-if (sourcefolderpath && !fs.existsSync(sourcefolderpath)) return console.log(chalk.red.bold('The source folder path is not a valid path!'));
-if (!datafoldername) return console.log(chalk.red.bold('No name for the data folders has been provided!'));
-if (!destinationpath) {
-  return console.log(chalk.red.bold('No destinationpath has been provided!'));
-} else if (!fs.existsSync(destinationpath)) {
-  return console.log(chalk.red.bold('The destinationpath path is not a valid path!'));
+if (!SOURCE_FILE_PATH && !SOURCE_FOLDER_PATH) return console.log(chalk.red.bold('Neither a source file or a source folder have been provided!'));
+if (SOURCE_FILE_PATH && !fs.existsSync(SOURCE_FILE_PATH)) return console.log(chalk.red.bold(`The source file path ${chalk.yellow(SOURCE_FILE_PATH)} is not a valid path!`));
+if (SOURCE_FOLDER_PATH && !fs.existsSync(SOURCE_FOLDER_PATH)) return console.log(chalk.red.bold(`The source folder path ${chalk.yellow(SOURCE_FOLDER_PATH)} is not a valid path!`));
+if (!DATA_FOLDER_NAME) return console.log(chalk.red.bold('No name for the data folders has been provided!'));
+if (!DATA_FOLDER_SEPERATOR) return console.log(chalk.red.bold('No seperator for the data folders has been provided!'));
+if (!DESTINATION_PATH) {
+  return console.log(chalk.red.bold('No destination path has been provided!'));
+} else if (!fs.existsSync(DESTINATION_PATH.replace(/[^/]*$/, ''))) {
+  return console.log(chalk.red.bold(`The destiantion path ${chalk.yellow(DESTINATION_PATH.replace(/[^/]*$/, ''))} is not a valid path!`));
 }
-if (!intervaltime) {
+if (!INTERVALTIME) {
   return console.log(chalk.red.bold('No interval time has been provided!'));
-} else if (!ms(intervaltime) || /^\d+$/.test(intervaltime)) {
+} else if (!ms(INTERVALTIME) || /^\d+$/.test(INTERVALTIME)) {
   return console.log(chalk.red.bold(`The interval time is not a valid number!\nYou can use ${chalk.yellow('d')} for days, ${chalk.yellow('h')} for hours, ${chalk.yellow('m')} for minutes, ${chalk.yellow('s')} for seconds and ${chalk.yellow('ms')} for milliseconds!`));
 }
 
 
 // Main process
-
+console.log()
 // Make a directory for the data if it does not exist
-manager.mkdir(destinationpath);
+manager.mkdir(DESTINATION_PATH);
 
 let n = 1; // This number gets used for making numbered data folders
-while (fs.existsSync(`${destinationpath}/${datafoldername}${datafolderspliter}${n}`)) n++ // As long as a Data folder with with the number exists, increase the number by 1
+while (fs.existsSync(`${DESTINATION_PATH}/${DATA_FOLDER_NAME}${DATA_FOLDER_SEPERATOR}${n}`)) n++ // As long as a Data folder with with the number exists, increase the number by 1
 
-manager.mkdir(`${destinationpath}/${datafoldername}${datafolderspliter}${n}`); // Make a numbered data folder
+manager.mkdir(`${DESTINATION_PATH}/${DATA_FOLDER_NAME}${DATA_FOLDER_SEPERATOR}${n}`); // Make a numbered data folder
 
 // Copy the source file, if one was provided
-if (sourcefilepath) manager.copy(sourcefilepath, `${destinationpath}/${datafoldername}${datafolderspliter}${n}/${sourcefilepath.split('/').pop()}`);
+if (SOURCE_FILE_PATH) manager.copy(SOURCE_FILE_PATH, `${DESTINATION_PATH}/${DATA_FOLDER_NAME}${DATA_FOLDER_SEPERATOR}${n}/${SOURCE_FILE_PATH.split('/').pop()}`);
 // Copy the source folder, if one was provided
-if (sourcefolderpath) manager.copyDir(sourcefolderpath, `${destinationpath}/${datafoldername}${datafolderspliter}${n}/${sourcefolderpath.split('/').pop()}`);
+if (SOURCE_FOLDER_PATH) manager.copyDir(SOURCE_FOLDER_PATH, `${DESTINATION_PATH}/${DATA_FOLDER_NAME}${DATA_FOLDER_SEPERATOR}${n}/${SOURCE_FOLDER_PATH.split('/').pop()}`);
 
 // Logging
 const date = new Date(Date.now());
-console.log(chalk.green.bold(`The ${sourcefilepath ? `${chalk.yellow.underline(sourcefilepath.split('/').pop())} file` : ''} ${sourcefolderpath ? `${sourcefilepath ? 'and the ' : ''}${chalk.yellow.underline(sourcefolderpath.split('/').pop())} folder ${sourcefilepath ? 'were' : 'was'}` : 'was'} successfully copied to the ${chalk.yellow.underline(destinationpath.split('/').pop())} directory! | #${n} | ${
+console.log(chalk.green.bold(`The ${SOURCE_FILE_PATH ? `${chalk.yellow.underline(SOURCE_FILE_PATH.split('/').pop())} file` : ''} ${SOURCE_FOLDER_PATH ? `${SOURCE_FILE_PATH ? 'and the ' : ''}${chalk.yellow.underline(SOURCE_FOLDER_PATH.split('/').pop())} folder ${SOURCE_FILE_PATH ? 'were' : 'was'}` : 'was'} successfully copied to the ${chalk.yellow.underline(`${DESTINATION_PATH}/${DATA_FOLDER_NAME}${DATA_FOLDER_SEPERATOR}${n}`)} directory! | #${n} | ${
   date.getFullYear() + "-" + 
   manager.dateTimePad((date.getMonth() + 1), 2) + "-" + 
   manager.dateTimePad(date.getDate(), 2) + " " +
@@ -50,18 +51,24 @@ console.log(chalk.green.bold(`The ${sourcefilepath ? `${chalk.yellow.underline(s
 
 
 setInterval(async () => { // Set an interval for copying the file and/or the folder after a specific amount of time
-  while (fs.existsSync(`${destinationpath}/${datafoldername}${datafolderspliter}${n}`)) n++ // As long as a Data folder with with the number exists, increase the number by 1
+  // Making sure the necessary paths are are still valid
+  if (SOURCE_FILE_PATH && !fs.existsSync(SOURCE_FILE_PATH)) throw console.log(chalk.red.bold(`The source file path ${chalk.yellow(SOURCE_FILE_PATH)} is not a valid path anymore!`));
+  if (SOURCE_FOLDER_PATH && !fs.existsSync(SOURCE_FOLDER_PATH)) throw console.log(chalk.red.bold(`The source folder path ${chalk.yellow(SOURCE_FOLDER_PATH)} is not a valid path anymore!`));
+  if (!fs.existsSync(DESTINATION_PATH.replace(/[^/]*$/, ''))) throw console.log(chalk.red.bold(`The destiantion path ${chalk.yellow(DESTINATION_PATH.replace(/[^/]*$/, ''))} is not a valid path anymore!`));
 
-  manager.mkdir(`${destinationpath}/${datafoldername}${datafolderspliter}${n}`); // Make a numbered data folder
+
+  while (fs.existsSync(`${DESTINATION_PATH}/${DATA_FOLDER_NAME}${DATA_FOLDER_SEPERATOR}${n}`)) n++ // As long as a Data folder with with the number exists, increase the number by 1
+
+  manager.mkdir(`${DESTINATION_PATH}/${DATA_FOLDER_NAME}${DATA_FOLDER_SEPERATOR}${n}`); // Make a numbered data folder
   
   // Copy the source file, if one was provided
-  if (sourcefilepath) manager.copy(sourcefilepath, `${destinationpath}/${datafoldername}${datafolderspliter}${n}/${sourcefilepath.split('/').pop()}`);
+  if (SOURCE_FILE_PATH) manager.copy(SOURCE_FILE_PATH, `${DESTINATION_PATH}/${DATA_FOLDER_NAME}${DATA_FOLDER_SEPERATOR}${n}/${SOURCE_FILE_PATH.split('/').pop()}`);
   // Copy the source folder, if one was provided
-  if (sourcefolderpath) manager.copyDir(sourcefolderpath, `${destinationpath}/${datafoldername}${datafolderspliter}${n}/${sourcefolderpath.split('/').pop()}`);
+  if (SOURCE_FOLDER_PATH) manager.copyDir(SOURCE_FOLDER_PATH, `${DESTINATION_PATH}/${DATA_FOLDER_NAME}${DATA_FOLDER_SEPERATOR}${n}/${SOURCE_FOLDER_PATH.split('/').pop()}`);
     
   // Logging
   const date = new Date(Date.now());
-  console.log(chalk.green.bold(`The ${sourcefilepath ? `${chalk.yellow.underline(sourcefilepath.split('/').pop())} file` : ''} ${sourcefolderpath ? `${sourcefilepath ? 'and the ' : ''}${chalk.yellow.underline(sourcefolderpath.split('/').pop())} folder ${sourcefilepath ? 'were' : 'was'}` : 'was'} successfully copied to the ${chalk.yellow.underline(destinationpath.split('/').pop())} directory! | #${n} | ${
+  console.log(chalk.green.bold(`The ${SOURCE_FILE_PATH ? `${chalk.yellow.underline(SOURCE_FILE_PATH.split('/').pop())} file` : ''} ${SOURCE_FOLDER_PATH ? `${SOURCE_FILE_PATH ? 'and the ' : ''}${chalk.yellow.underline(SOURCE_FOLDER_PATH.split('/').pop())} folder ${SOURCE_FILE_PATH ? 'were' : 'was'}` : 'was'} successfully copied to the ${chalk.yellow.underline(`${DESTINATION_PATH}/${DATA_FOLDER_NAME}${DATA_FOLDER_SEPERATOR}${n}`)} directory! | #${n} | ${
     date.getFullYear() + "-" + 
     manager.dateTimePad((date.getMonth() + 1), 2) + "-" + 
     manager.dateTimePad(date.getDate(), 2) + " " +
@@ -69,4 +76,11 @@ setInterval(async () => { // Set an interval for copying the file and/or the fol
     manager.dateTimePad(date.getMinutes(), 2) + ":" +
     manager.dateTimePad(date.getSeconds(), 2)
   }`));
-}, ms(intervaltime)); // Interval time
+}, ms(INTERVALTIME)); // Interval time
+
+
+// Handling errors 
+process.on('unhandledRejection', async error => {
+  if (!error) return process.exit();
+  return console.error('Unhandled promise rejection:', error);
+});

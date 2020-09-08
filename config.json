@@ -1,8 +1,8 @@
 {
-    "sourcefilepath": "C:/Folder1/test.txt",  
-    "sourcefolderpath": "C:/Folder2/test",
-    "datafoldername": "Data",
-    "datafolderspliter": "_",
-    "destinationpath": "C:/DataFolder",
-    "intervaltime": "1h"
+    "SOURCE_FILE_PATH": "C:/Folder1/test.txt",  
+    "SOURCE_FOLDER_PATH": "C:/Folder2/test",
+    "DATA_FOLDER_NAME": "Data",
+    "DATA_FOLDER_SEPERATOR": "_",
+    "DESTINATION_PATH": "C:/DataFolder/asdsadasdsad",
+    "INTERVALTIME": "10s"
 }
