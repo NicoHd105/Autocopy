@@ -41,11 +41,11 @@ if (SOURCE_FOLDER_PATH) manager.copyDir(SOURCE_FOLDER_PATH, `${DESTINATION_PATH}
 // Logging
 const date = new Date(Date.now());
 console.log(chalk.green.bold(`The ${SOURCE_FILE_PATH ? `${chalk.yellow.underline(SOURCE_FILE_PATH.split('/').pop())} file` : ''} ${SOURCE_FOLDER_PATH ? `${SOURCE_FILE_PATH ? 'and the ' : ''}${chalk.yellow.underline(SOURCE_FOLDER_PATH.split('/').pop())} folder ${SOURCE_FILE_PATH ? 'were' : 'was'}` : 'was'} successfully copied to the ${chalk.yellow.underline(`${DESTINATION_PATH}/${DATA_FOLDER_NAME}${DATA_FOLDER_SEPERATOR}${n}`)} directory! | #${n} | ${
-  date.getFullYear() + "-" + 
-  manager.dateTimePad((date.getMonth() + 1), 2) + "-" + 
-  manager.dateTimePad(date.getDate(), 2) + " " +
-  manager.dateTimePad(date.getHours(), 2) + ":" +
-  manager.dateTimePad(date.getMinutes(), 2) + ":" +
+  date.getFullYear() + '-' + 
+  manager.dateTimePad((date.getMonth() + 1), 2) + '-' + 
+  manager.dateTimePad(date.getDate(), 2) + ' ' +
+  manager.dateTimePad(date.getHours(), 2) + ':' +
+  manager.dateTimePad(date.getMinutes(), 2) + ':' +
   manager.dateTimePad(date.getSeconds(), 2)
 }`));
 
@@ -69,11 +69,11 @@ setInterval(async () => { // Set an interval for copying the file and/or the fol
   // Logging
   const date = new Date(Date.now());
   console.log(chalk.green.bold(`The ${SOURCE_FILE_PATH ? `${chalk.yellow.underline(SOURCE_FILE_PATH.split('/').pop())} file` : ''} ${SOURCE_FOLDER_PATH ? `${SOURCE_FILE_PATH ? 'and the ' : ''}${chalk.yellow.underline(SOURCE_FOLDER_PATH.split('/').pop())} folder ${SOURCE_FILE_PATH ? 'were' : 'was'}` : 'was'} successfully copied to the ${chalk.yellow.underline(`${DESTINATION_PATH}/${DATA_FOLDER_NAME}${DATA_FOLDER_SEPERATOR}${n}`)} directory! | #${n} | ${
-    date.getFullYear() + "-" + 
-    manager.dateTimePad((date.getMonth() + 1), 2) + "-" + 
-    manager.dateTimePad(date.getDate(), 2) + " " +
-    manager.dateTimePad(date.getHours(), 2) + ":" +
-    manager.dateTimePad(date.getMinutes(), 2) + ":" +
+    date.getFullYear() + '-' + 
+    manager.dateTimePad((date.getMonth() + 1), 2) + '-' + 
+    manager.dateTimePad(date.getDate(), 2) + ' ' +
+    manager.dateTimePad(date.getHours(), 2) + ':' +
+    manager.dateTimePad(date.getMinutes(), 2) + ':' +
     manager.dateTimePad(date.getSeconds(), 2)
   }`));
 }, ms(INTERVALTIME)); // Interval time

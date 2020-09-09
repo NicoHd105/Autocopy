@@ -9,7 +9,7 @@ var mkdir = dir => {
 	try {
 		return fs.mkdirSync(dir);
 	} catch (error) {
-	  if (error.code !== "EEXIST") {
+	  if (error.code !== 'EEXIST') {
 			throw console.error(error);
 		} else {
       return
@@ -46,7 +46,7 @@ exports.copyDir = copyDir;
 var dateTimePad = (value, digits) => {
   let number = value;
 
-  while (number.toString().length < digits) number = "0" + number
+  while (number.toString().length < digits) number = '0' + number
 
   return number;
 };
