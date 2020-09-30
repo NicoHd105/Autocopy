@@ -1,8 +1,34 @@
 const fs = require('fs');
 const ncp = require('ncp').ncp;
+const chalk = require('chalk');
+const { SOURCE_FILE_PATH, SOURCE_FOLDER_PATH, DATA_FOLDER_NAME, DATA_FOLDER_SEPERATOR, DESTINATION_PATH } = require('./config.json');
 
 
-// Functions
+// Main function
+var COPY = async () => {
+  var i = 1; // This number gets used for making numbered data folders
+  while (fs.existsSync(`${DESTINATION_PATH}/${DATA_FOLDER_NAME}${DATA_FOLDER_SEPERATOR}${i}`)) i++ // As long as a Data folder with with the number exists, increase the number by 1
+  
+  mkdir(`${DESTINATION_PATH}/${DATA_FOLDER_NAME}${DATA_FOLDER_SEPERATOR}${i}`); // Make a numbered data folder
+  
+  // Copy the source file, if one was provided
+  if (SOURCE_FILE_PATH) copy(SOURCE_FILE_PATH, `${DESTINATION_PATH}/${DATA_FOLDER_NAME}${DATA_FOLDER_SEPERATOR}${i}/${SOURCE_FILE_PATH.split('/').pop()}`);
+  // Copy the source folder, if one was provided
+  if (SOURCE_FOLDER_PATH) copyDir(SOURCE_FOLDER_PATH, `${DESTINATION_PATH}/${DATA_FOLDER_NAME}${DATA_FOLDER_SEPERATOR}${i}/${SOURCE_FOLDER_PATH.split('/').pop()}`);
+  
+  // Logging
+  const date = new Date(Date.now());
+  console.log(chalk.green.bold(`The ${SOURCE_FILE_PATH ? `${chalk.yellow.underline(SOURCE_FILE_PATH.split('/').pop())} file` : ''} ${SOURCE_FOLDER_PATH ? `${SOURCE_FILE_PATH ? 'and the ' : ''}${chalk.yellow.underline(SOURCE_FOLDER_PATH.split('/').pop())} folder ${SOURCE_FILE_PATH ? 'were' : 'was'}` : 'was'} successfully copied to the ${chalk.yellow.underline(`${DESTINATION_PATH}/${DATA_FOLDER_NAME}${DATA_FOLDER_SEPERATOR}${i}`)} directory! | #${i} | ${
+    date.getFullYear() + '-' + 
+    dateTimePad((date.getMonth() + 1), 2) + '-' + 
+    dateTimePad(date.getDate(), 2) + ' ' +
+    dateTimePad(date.getHours(), 2) + ':' +
+    dateTimePad(date.getMinutes(), 2) + ':' +
+    dateTimePad(date.getSeconds(), 2)
+  }`));
+}
+exports.COPY = COPY;
+
 
 // Make a directory and if it already exists do nothing
 var mkdir = dir => {
