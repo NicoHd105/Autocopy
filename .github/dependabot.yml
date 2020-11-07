@@ -5,10 +5,10 @@
 
 version: 2
 updates:
-  - package-ecosystem: "npm" # See documentation for possible values
-    directory: "/" # Location of package manifests
+  - package-ecosystem: 'npm' # See documentation for possible values
+    directory: '/' # Location of package manifests
     schedule:
-      interval: "daily"
-      time: "00:00"
-      timezone: "Europe/Vienna"
+      interval: 'daily'
+      time: '00:00'
+      timezone: 'Europe/Vienna'
     open-pull-requests-limit: 100
