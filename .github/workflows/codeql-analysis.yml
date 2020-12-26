@@ -21,12 +21,11 @@ on:
 jobs:
   analyze:
     name: Analyze
-    runs-on: ${{ matrix.os }}
+    runs-on: windows-latest
 
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, ubuntu-latest]
         language: ['javascript']
         # CodeQL supports [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python' ]
         # Learn more:
