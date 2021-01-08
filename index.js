@@ -109,6 +109,6 @@ setInterval(() => {
 
 // Handling errors
 process.on('unhandledRejection', error => {
-	if (!error) return process.exit();
+	if (!error) return process.exit(1);
 	return console.error('Unhandled promise rejection:', error);
 });
