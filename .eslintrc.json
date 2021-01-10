@@ -1,10 +1,5 @@
 {
-	"extends": [
-		"airbnb",
-		"eslint:recommended",
-		"prettier",
-		"plugin:node/recommended"
-	],
+	"extends": ["airbnb", "eslint:recommended", "prettier", "plugin:node/recommended"],
 	"plugins": ["prettier"],
 	"rules": {
 		"prettier/prettier": "warn",
@@ -18,13 +13,7 @@
 		"prefer-promise-reject-errors": "off",
 		"no-irregular-whitespace": ["error", { "skipTemplates": true }],
 		"capitalized-comments": ["warn", "always"],
-		"node/no-unsupported-features/node-builtins": [
-			"error",
-			{ "version": ">=8.5.0" }
-		],
-		"node/no-unsupported-features/es-syntax": [
-			"error",
-			{ "version": ">=10.0.0" }
-		]
+		"node/no-unsupported-features/node-builtins": ["error", { "version": ">=8.5.0" }],
+		"node/no-unsupported-features/es-syntax": ["error", { "version": ">=10.0.0" }]
 	}
 }

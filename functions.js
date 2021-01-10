@@ -60,12 +60,7 @@ exports.dateTimePad = dateTimePad;
 // Main function
 const COPY = async () => {
 	let i = 1; // This number gets used for making numbered data folders
-	while (
-		fs.existsSync(
-			`${DESTINATION_PATH}/${DATA_FOLDER_NAME}${DATA_FOLDER_SEPERATOR}${i}`
-		)
-	)
-		i++; // As long as a Data folder with with the number exists, increase the number by 1
+	while (fs.existsSync(`${DESTINATION_PATH}/${DATA_FOLDER_NAME}${DATA_FOLDER_SEPERATOR}${i}`)) i++; // As long as a Data folder with with the number exists, increase the number by 1
 
 	mkdir(`${DESTINATION_PATH}/${DATA_FOLDER_NAME}${DATA_FOLDER_SEPERATOR}${i}`); // Make a numbered data folder
 
@@ -73,28 +68,20 @@ const COPY = async () => {
 	if (SOURCE_FILE_PATH)
 		copy(
 			SOURCE_FILE_PATH,
-			`${DESTINATION_PATH}/${DATA_FOLDER_NAME}${DATA_FOLDER_SEPERATOR}${i}/${SOURCE_FILE_PATH.split(
-				'/'
-			).pop()}`
+			`${DESTINATION_PATH}/${DATA_FOLDER_NAME}${DATA_FOLDER_SEPERATOR}${i}/${SOURCE_FILE_PATH.split('/').pop()}`
 		);
 	// Copy the source folder, if one was provided
 	if (SOURCE_FOLDER_PATH)
 		copyDir(
 			SOURCE_FOLDER_PATH,
-			`${DESTINATION_PATH}/${DATA_FOLDER_NAME}${DATA_FOLDER_SEPERATOR}${i}/${SOURCE_FOLDER_PATH.split(
-				'/'
-			).pop()}`
+			`${DESTINATION_PATH}/${DATA_FOLDER_NAME}${DATA_FOLDER_SEPERATOR}${i}/${SOURCE_FOLDER_PATH.split('/').pop()}`
 		);
 
 	// Logging
 	const date = new Date(Date.now());
 	console.log(
 		chalk.green.bold(
-			`The ${
-				SOURCE_FILE_PATH
-					? `${chalk.yellow.underline(SOURCE_FILE_PATH.split('/').pop())} file`
-					: ''
-			} ${
+			`The ${SOURCE_FILE_PATH ? `${chalk.yellow.underline(SOURCE_FILE_PATH.split('/').pop())} file` : ''} ${
 				SOURCE_FOLDER_PATH
 					? `${SOURCE_FILE_PATH ? 'and the ' : ''}${chalk.yellow.underline(
 							SOURCE_FOLDER_PATH.split('/').pop()
@@ -102,16 +89,10 @@ const COPY = async () => {
 					: 'was'
 			} successfully copied to the ${chalk.yellow.underline(
 				`${DESTINATION_PATH}/${DATA_FOLDER_NAME}${DATA_FOLDER_SEPERATOR}${i}`
-			)} directory! | #${i} | ${`${date.getFullYear()}-${dateTimePad(
-				date.getMonth() + 1,
+			)} directory! | #${i} | ${`${date.getFullYear()}-${dateTimePad(date.getMonth() + 1, 2)}-${dateTimePad(
+				date.getDate(),
 				2
-			)}-${dateTimePad(date.getDate(), 2)} ${dateTimePad(
-				date.getHours(),
-				2
-			)}:${dateTimePad(date.getMinutes(), 2)}:${dateTimePad(
-				date.getSeconds(),
-				2
-			)}`}`
+			)} ${dateTimePad(date.getHours(), 2)}:${dateTimePad(date.getMinutes(), 2)}:${dateTimePad(date.getSeconds(), 2)}`}`
 		)
 	);
 };
