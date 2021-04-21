@@ -9,7 +9,7 @@
 	"author": "NicoHd105",
 	"license": "MIT",
 	"dependencies": {
-		"chalk": "^4.1.0",
+		"chalk": "^4.1.1",
 		"ms": "^2.1.3",
 		"ncp": "^2.0.0"
 	},
